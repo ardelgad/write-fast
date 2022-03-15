@@ -41,7 +41,7 @@ button.addEventListener("click", function () {
 // PASO 2: Escuchar el teclado
 
 // Requisito 1: Añadir un listener para detectar las letras introducidas por el usuario (solo letras). Mostrar por console.log
-document.body.addEventListener("keyup", handleInput);
+document.body.addEventListener("keydown", handleInput);
 
 function handleInput(event) {
     //escuchar al teclado
@@ -50,7 +50,7 @@ function handleInput(event) {
     //Solo letras
     if (event.keyCode < 65 || event.keyCode > 90) {
         return;
-    };
+    }
     //console.log(inputLetter);
 
     // Requisito 2: Cada vez que el usuario pulsa una tecla:
@@ -59,20 +59,30 @@ function handleInput(event) {
         console.log(inputLetter);
 
         // B. Si ha escrito correctamente la letra que toca
-            // 1. Actualizar +1 la variable STATE.currentProgressWord
-            STATE.currentProgressWord++
+        // 1. Actualizar +1 la variable STATE.currentProgressWord
+        STATE.currentProgressWord++
 
-         // 2. Comprobar si ya hemos terminado la palabra con STATE.isWordFinished
-         STATE.isWordFinished()
+        // 2. Comprobar si ya hemos terminado la palabra con STATE.isWordFinished
+        if (STATE.isWordFinished() == true) {
+              // B. Obtener una nueva palabra con getNextWord() y asignarla a STATE.currentWord;
+            STATE.currentWord = getNextWord();
+            // C. Actualiar document.querySelector("#next-word") con la nueva palabra
+            document.querySelector("#next-word").textContent = STATE.currentWord;
+            // A. Resetear la variable STATE.currentProgressWord
+            STATE.currentProgressWord = 0
+            return;
+        }
 
         // 3. Actualizar la UX. Os ayudará el método substring o slice. Podeis usar <span> para este cometido; partiendo la STATE.currentWord por el índice de currentProgressWord https://oscarm.tinytake.com/msc/NjYyMTUyOF8xOTE2NDI1NQ
-        STATE.currentWord.slice(0, STATE.currentProgressWord)
-/*         let span = document.createElement('span');
-        document.querySelector("#next-word").appendChild(span)
-        document.querySelector("#next-word span").appendChild(STATE.currentWord.slice(0, STATE.currentProgressWord)); */
-        console.log(STATE.currentWord.slice(0, STATE.currentProgressWord));
 
-        return
+        let written = STATE.currentWord.slice(0, STATE.currentProgressWord)
+        let secretWord = STATE.currentWord.slice(STATE.currentProgressWord)
+
+        document.querySelector("#next-word").innerHTML = `<span> ${written}</span> ${secretWord}`;
+
+        document.querySelector("span").style.color = "green";
+
+        console.log(STATE.isWordFinished());
+        
     }
-
-};
+}
